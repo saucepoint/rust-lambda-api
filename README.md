@@ -2,24 +2,13 @@
 
 🦀 Create HTTP APIs with Rust, hosted on AWS Lambda (serverless compute) 🦀
 
-*Lightweight, fast, and preorganized*
+### *Lightweight, fast, and preorganized*
+
+The template includes examples for routing, query parameters, request bodies, and response serialization, which are absent from *cargo-lambda*
 
 All of the AWS infrastructure is created & handled with Terraform. What are you waiting for, anon?
 
 ---
-
-### *Disclaimer*
-This template repo is intended for hobbyists and experiments. The following bits will need to be modified & enhanced before it can be considered production-ready:
-
-🚩 Tests - this repo totaly lacks automated tests
-
-🚩  Modularized Terraform - the current files will collide with resources of the same name. The files should be better organized & more configurable such that it can tap into existing infrastructure (VPCs)
-
-🚩  AWS API Gateway Trigger - Typical Lambda REST APIs sit behind API Gateway. It didn't stop be from getting this prototype functional, so I didn't really bother
-
-🚩  API authentication - this repo offers no examples around auth-required APIs
-
-Feel free to submit PRs!
 
 # Setup & Dependencies
 
@@ -32,7 +21,7 @@ Feel free to submit PRs!
 2. Prepare an initial `.zip` for Terraform to upload to AWS
     ```bash
     cd lambda-api/
-    cargo lambda build && zip target/lambda/lambda-api/bootstrap.zip target/lambda/lambda-api/bootstrap
+    cargo lambda build --output-format zip
     cd ..
     ```
 2. Use terraform to spin up AWS infrastructure
@@ -42,8 +31,10 @@ Feel free to submit PRs!
     terraform apply
     // read the changes reported by terraform
     // type yes and hit Enter
-    // Success will return:
+    // Successful infra deployment will return:
     // Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+    ```
+    *Note:* The initial creation of the Lambda will take up to 1 min to process. If you attempt a `cargo lambda deploy` shortly after resource-creation, it will fail if the Lambda has an in-progress update
 
 # Configuration
 ### Adding Routes:
@@ -104,13 +95,14 @@ POST 127.0.0.1:9000/lambda-url/lambda-api/hello
 }
 ```
 
-*Note*: when deployed to Lambda, your URL will be:
-https://RANDOM_HASH.lambda-url.REGION.on.aws/hello
+*Note*: when deployed to Lambda, your route will not have `/lambda-url/lambda-api` prefix:
+
+*https://RANDOM_HASH.lambda-url.REGION.on.aws/hello*
 
 
 # Deploying
 
-Please see [cargo-lambda](https://github.com/cargo-lambda/cargo-lambda) for additional flags.
+Please see [cargo-lambda](https://github.com/cargo-lambda/cargo-lambda) for additional flags (such as environment variables)
 
 This is my preferred deployment call:
 
@@ -118,6 +110,21 @@ This is my preferred deployment call:
 ```bash
 cargo lambda build --release && cargo lambda deploy --enable-function-url --iam-role arn:aws:iam::<AWS_ACCOUNT_NUMBER>:role/rust-lambda-api 
 ```
+
+---
+
+### *Disclaimer*
+This template repo is intended for hobbyists and experiments. The following bits will need to be modified & enhanced before it can be considered production-ready:
+
+🚩 Tests - this repo totally lacks automated tests
+
+🚩  Modularized Terraform - the current files will collide with resources of the same name. The files should be better organized & more configurable such that it can tap into existing infrastructure (VPCs)
+
+🚩  AWS API Gateway Trigger - Typical Lambda REST APIs sit behind API Gateway. It didn't stop me from getting this prototype functional, so I didn't really bother
+
+🚩  API authentication - this repo offers no examples around auth-required APIs
+
+Feel free to submit PRs!
 
 ---
 
