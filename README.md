@@ -49,7 +49,7 @@ Feel free to submit PRs!
 ### Adding Routes:
 
 1. Create a new file such as `lambda-api/src/api/foo.rs`
-    - Add GET/POST handlers, Request/Response structs, similar to `src/api/hello.rs`
+    - Add GET/POST handlers, Request/Response structs, similar to [src/api/hello.rs](https://github.com/saucepoint/rust-lambda-api/blob/db213e32e5c5e0fc4dd5b3b5cdf14047ff6ddaa9/lambda-api/src/api/hello.rs)
 
 2. Register the route in `lambda-api/src/main.rs` similar to [this](https://github.com/saucepoint/rust-lambda-api/blob/1b3ccfea94e0378512a98bce56d7ef3a0f843715/lambda-api/src/main.rs#L18-L25)
     ```rust
