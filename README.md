@@ -20,7 +20,7 @@ Feel free to submit PRs!
 
 1. [Configure AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
 2. Install [Rust](https://www.rust-lang.org/tools/install) & [cargo-lambda](https://github.com/cargo-lambda/cargo-lambda)
-* `cargo install cargo-lambda`
+    * `cargo install cargo-lambda`
 
 2. [Install terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/aws-get-started)
 
@@ -41,13 +41,29 @@ Feel free to submit PRs!
     // Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 
 # Configuration
-Rename the function:
+### Adding Routes:
+
+1. Create a new file such as `lambda-api/src/api/foo.rs`
+    - Add GET/POST handlers, Request/Response structs, similar to `src/api/hello.rs`
+
+2. Register the route in `lambda-api/src/main.rs` similar to [this](https://github.com/saucepoint/rust-lambda-api/blob/1b3ccfea94e0378512a98bce56d7ef3a0f843715/lambda-api/src/main.rs#L18-L25)
+    ```rust
+    "/foo" => {
+        match method {
+            Method::POST => api::foo::post(event),
+            Method::GET => api::foo::get(event),
+            _ => api::errors::handle_405(),
+        }
+    }
+    ```
+
+### Rename the function:
 
 1. `lambda-api/Cargo.toml`
-  - name = ~~"lambda-api"~~ --> NEW_FUNCTION_NAME
+    - name = ~~"lambda-api"~~ --> NEW_FUNCTION_NAME
 2. `terraform/main.tf`
-  - function_name = ~~"lambda-api"~~ --> NEW_FUNCTION_NAME
-  - filename = ~~"../lambda-api/target/lambda/lambda-api/bootstrap.zip"~~ -> "../lambda-api/target/lambda/NEW_FUNCTION_NAME/bootstrap.zip"
+    - function_name = ~~"lambda-api"~~ --> NEW_FUNCTION_NAME
+    - filename = ~~"../lambda-api/target/lambda/lambda-api/bootstrap.zip"~~ --> "../lambda-api/target/lambda/NEW_FUNCTION_NAME/bootstrap.zip"
 
 3. Apply changes
     ```bash
@@ -69,7 +85,9 @@ cd lambda-api/
 cargo lambda watch
 ```
 
-Use Postman:
+Testing:
+
+The base URL will be *127.0.0.1:9000/lambda-url/lambda-api*
 ```
 GET 127.0.0.1:9000/lambda-url/lambda-api/hello?name=saucepoint&number=100
 
@@ -93,5 +111,5 @@ This is my preferred deployment call:
 
 *Get your IAM Role's ARN from the AWS web console*
 ```bash
-cargo lambda build --release && cargo lambda deploy --enable-function-url --iam-role arn:aws:iam::<AWS_ACCOUNT_NUMBER>:role/iam_for_lambda 
+cargo lambda build --release && cargo lambda deploy --enable-function-url --iam-role arn:aws:iam::<AWS_ACCOUNT_NUMBER>:role/rust-lambda-api 
 ```
