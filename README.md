@@ -1,18 +1,23 @@
 ## rust-lambda-api
-# **Woah there! Thanks for snooping around, but the repo is not ready yet.**
 
-Follow me on [twitter](https://twitter.com/saucepoint) to know when it's ready :)
+🦀 Create HTTP APIs with Rust, hosted on AWS Lambda (serverless compute) 🦀
+
+*Lightweight, fast, and preorganized*
+
+All of the AWS infrastructure is created & handled with Terraform. What are you waiting for, anon?
 
 ---
 
-# Description
-
+### *Disclaimer*
 This template repo is intended for hobbyists and experiments. The following bits will need to be modified & enhanced before it can be considered production-ready:
 
-- [] Tests - this repo lacks automated tests in its entirety
-- [] Modular-ized Terraform files. Should be more configurable such that it can tap into existing infrastructure (VPCs)
-- [] AWS API Gateway Trigger - Typical Lambda REST APIs sit behind API Gateway. It didn't stop be from getting this prototype functional, so I didn't really bother
-- [] API authentication - this repo offers no examples around auth-required APIs
+🚩 Tests - this repo totaly lacks automated tests
+
+🚩  Modularized Terraform - the current files will collide with resources of the same name. The files should be better organized & more configurable such that it can tap into existing infrastructure (VPCs)
+
+🚩  AWS API Gateway Trigger - Typical Lambda REST APIs sit behind API Gateway. It didn't stop be from getting this prototype functional, so I didn't really bother
+
+🚩  API authentication - this repo offers no examples around auth-required APIs
 
 Feel free to submit PRs!
 
@@ -31,7 +36,7 @@ Feel free to submit PRs!
     cd ..
     ```
 2. Use terraform to spin up AWS infrastructure
-    ```bash
+    ```
     cd terraform/
     terraform init
     terraform apply
@@ -113,3 +118,9 @@ This is my preferred deployment call:
 ```bash
 cargo lambda build --release && cargo lambda deploy --enable-function-url --iam-role arn:aws:iam::<AWS_ACCOUNT_NUMBER>:role/rust-lambda-api 
 ```
+
+---
+
+I'm tinkering outside of my 9-5, with plans to launch *something, eventually*
+
+Find me on twitter [@saucepoint](https://twitter.com/saucepoint)
