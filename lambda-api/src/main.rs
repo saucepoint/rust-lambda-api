@@ -3,11 +3,11 @@ use lambda_http::request::{RequestContext};
 use hyper::Method;
 mod api;
 
-fn resolve_routes(method: Method, path: &str, event: Request) -> Result<Response<Body>, Error> {
-    println!("Resolving Path: {:?}", path);
+fn resolve_routes(method: Method, route: &str, event: Request) -> Result<Response<Body>, Error> {
+    println!("Resolving Route: {:?}", route);
 
-    // route to function handlers based on the method and path
-    match path {
+    // route to function handlers based on the method and route
+    match route {
         "/hello" => {
             match method {
                 Method::POST => api::hello::post(event),
@@ -23,6 +23,12 @@ fn resolve_routes(method: Method, path: &str, event: Request) -> Result<Response
         //         _ => api::errors::handle_405(),
         //     }
         // }
+        "/" => {
+            match method {
+                Method::GET => api::errors::handle_welcome(),
+                _ => api::errors::handle_405(),
+            }
+        }
         _ => {
             api::errors::handle_404()
         }
@@ -40,14 +46,18 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
         RequestContext::ApiGatewayV2(ref c) => {
             match &c.http.path {
                 Some(path) => {
-                    // local execution with `cargo lambda watch` is prepending
-                    // an extra `/` to the path. this logic strips off a prepended `/`
-                    // if the first two characters in the path are `//`
-                    let path = match &path[..2] {
-                        "//" => &path[1..],
-                        _ => &path,
-                    };
-                    resolve_routes(c.http.method.clone(), path, event)
+                    let mut route: &str = path.as_str();
+                    if route.len() >= 2 {
+                        // local execution with `cargo lambda watch` is prepending
+                        // an extra `/` to the path. this logic strips off a prepended `/`
+                        // if the first two characters in the path are `//`
+                        route = match &path[..2] {
+                            "//" => &path[1..],
+                            _ => &path,
+                        };
+                    }
+
+                    resolve_routes(c.http.method.clone(), route, event)
                 }
                 None => {
                     api::errors::handle_404()
